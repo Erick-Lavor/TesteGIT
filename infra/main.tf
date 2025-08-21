@@ -9,14 +9,19 @@ terraform {
   required_version = ">= 1.2"
 }
 provider "aws" {
-  region = "us-east-1"
+  region = var.regiao_aws
 }
 resource "aws_instance" "app_server" {
   ami           = "ami-020cba7c55df1f615"
-  instance_type = "t2.micro"
-  key_name = "NextcloudSebrae"
+  instance_type = var.instancia
+  key_name = var.chave
+  vpc_security_group_ids = [aws_security_group.acesso_terraform]
 
   tags = {
     Name = "teste-terraform"
   }
+}
+
+output "IP_Publico" {
+  value = aws_instance.app_server.public_ip  
 }
