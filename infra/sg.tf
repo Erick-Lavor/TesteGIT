@@ -1,6 +1,6 @@
 resource "aws_security_group" "acesso_terraform" {
-    name = "SG_Terraform"
-    description = "Teste SG terraform"
+    name = var.grupoDeSeguraca
+    
     ingress {
         cidr_blocks = [ "0.0.0.0/0" ]
         ipv6_cidr_blocks = [ "::/0" ]

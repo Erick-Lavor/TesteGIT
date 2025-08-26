@@ -11,17 +11,24 @@ terraform {
 provider "aws" {
   region = var.regiao_aws
 }
-resource "aws_instance" "app_server" {
-  ami           = "ami-020cba7c55df1f615"
+resource "aws_launch_template" "maquina" {
+  image_id      = "ami-020cba7c55df1f615"
   instance_type = var.instancia
   key_name = var.chave
-  vpc_security_group_ids = [aws_security_group.acesso_terraform]
-
+  
   tags = {
-    Name = "teste-terraform"
+    Name = "teste-terraform-template"
   }
+  security_group_names = [var.grupoDeSeguraca]
 }
 
-output "IP_Publico" {
-  value = aws_instance.app_server.public_ip  
+resource "aws_autoscaling_group" "grupo_terraform" {
+  availability_zones = ["${var.regiao_aws}a"]
+  name = var.nomeGrupo
+  max_size = var.maximo
+  min_size = var.minimo
+  launch_template {
+    id = aws_launch_template.maquina.id
+    version = "$Latest"
+  }
 }
